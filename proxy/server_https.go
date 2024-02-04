@@ -27,13 +27,9 @@ func (p *Proxy) listenHTTP(addr *net.TCPAddr) (laddr *net.TCPAddr, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("tcp listener: %w", err)
 	}
-	log.Info("Listening to https://%s", tcpListen.Addr())
+	log.Info("Listening to http://%s", tcpListen.Addr())
 
-	tlsConfig := p.TLSConfig.Clone()
-	tlsConfig.NextProtos = []string{http2.NextProtoTLS, "http/1.1"}
-
-	tlsListen := tls.NewListener(tcpListen, tlsConfig)
-	p.httpsListen = append(p.httpsListen, tlsListen)
+	p.httpListen = append(p.httpListen, tcpListen)
 
 	return tcpListen.Addr().(*net.TCPAddr), nil
 }
@@ -69,7 +65,7 @@ func (p *Proxy) createHTTPSListeners() (err error) {
 	}
 
 	for _, addr := range p.HTTPSListenAddr {
-		log.Info("Creating an HTTPS server")
+		log.Info("Creating an HTTP server")
 
 		tcpAddr, lErr := p.listenHTTP(addr)
 		if lErr != nil {
