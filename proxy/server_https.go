@@ -1,7 +1,6 @@
 package proxy
 
 import (
-	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -16,7 +15,6 @@ import (
 	"github.com/miekg/dns"
 	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
-	"golang.org/x/net/http2"
 )
 
 // listenHTTP creates instances of TLS listeners that will be used to run an
@@ -29,7 +27,7 @@ func (p *Proxy) listenHTTP(addr *net.TCPAddr) (laddr *net.TCPAddr, err error) {
 	}
 	log.Info("Listening to http://%s", tcpListen.Addr())
 
-	p.httpListen = append(p.httpListen, tcpListen)
+	p.httpsListen = append(p.httpsListen, tcpListen)
 
 	return tcpListen.Addr().(*net.TCPAddr), nil
 }
